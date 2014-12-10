@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Emojii keyboard</title>
+</head>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<link href="css/minEmoji.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+
+<script src="js/emotions.js"></script>
+<script src="js/jMinEmoji.js"></script>
+<script src="js/Emojii_Keyboard.js"></script>
+<body>
+
+<div style="float: left;"><input type="text" size="50" class="emojii_keyboard"/></div>
+<div style="float: right;"><input type="text" size="65" class="emojii_keyboard"/></div>
+
+<br/><br/>
+
+<div style="float: left;"><input type="text" size="75" class="emojii_keyboard"/></div>
+<div style="float: right;"><input type="text" size="100" class="emojii_keyboard"/></div>
+
+
+
+<script>
+    $(function () {
+        $(".emojii_keyboard").Emojii_Keyboard();
+    });
+</script>
+
+</body>
+</html>

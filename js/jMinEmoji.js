@@ -12,7 +12,9 @@
 	var regx = new RegExp('(' + regx_arr.join('|') + ')', 'g');
 	regx_arr = null;
 	function ei(s,ons){
-		return s.replace(regx, function (a, b) {return '<img src="data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==" style="vertical-align: middle;" class="em emj'+emoji[b]+'"/>';});
+		return s.replace(regx, function (a, b) {
+			return '<img src="data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==" style="vertical-align: middle;" class="em emj'+emoji[b]+'" data-char="'+a+'"/>';
+		});
 	}
 	$.fn.minEmoji = function(on_safari){
 		return this.each(function() {

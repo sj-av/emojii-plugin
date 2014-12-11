@@ -13,17 +13,19 @@ function Emojii_Keyboard(el) {
 
 Emojii_Keyboard.prototype.renderSampleModal = function () {
 
-    if ($("#tabs-container-sample").length != 0) return;
+    if ($("#tabs-container-sample").length !== 0) { return; }
 
     this.$documentBody.append('<div id="tabs-container-sample"><ul class="tabs"></ul></div>');
     this.input.trigger("ek.sample-container-rendered");
 
     var $container = $("#tabs-container-sample"),
         $tabs = $container.find(".tabs"),
-        _i = 1, current, html,
+        _i = 1,
+        current,
+        html,
         self = this;
 
-    if ($container.attr("rendered"))return;
+    if ($container.attr("rendered")) { return; }
 
     for (var group in EP_emotions) {
         if (!EP_emotions.hasOwnProperty(group)) continue;
@@ -85,8 +87,11 @@ Emojii_Keyboard.prototype.btnClick = function () {
         });
 
         $('#' + hash + ' .em').click(function () {
-            var html = $(this)[0].outerHTML;
-            self.pasteHtmlAtCaret(html);
+            var character = $(this).attr("data-char"),
+                caretPos = self.input[0].selectionStart,
+                prevText = self.input.val();
+            
+            self.input.val(prevText.substring(0, caretPos) + character + prevText.substring(caretPos) );
         });
         self.input.trigger("ek.modal-window-rendered");
     } else {
@@ -117,61 +122,7 @@ Emojii_Keyboard.prototype.render = function () {
 
     this.btn.click(self.btnClick.bind(self));
     this.input.after(this.btn);
-
-    var div = $("<div/>").attr(attributes).css({
-        border: "2px groove",
-        padding: "1px",
-        width: self.input.width(),
-        height: "20px",
-        //"line-height": "20px",
-        "font-size": "14px",
-        "font-family": $inputs.css("font-family"),
-        float: "left",
-        "white-space": "nowrap",
-        "overflow": "hidden"
-    }).bind('keypress', function (e) {
-        var code = e.keyCode || e.which;
-        if (code == 13) return false;
-    });
-
-    this.input.replaceWith(div);
-    this.input = div;
-};
-
-Emojii_Keyboard.prototype.pasteHtmlAtCaret = function (html) {
-    var sel, range, self = this;
-    if (window.getSelection) {
-        sel = window.getSelection();
-
-        if (($(sel.focusNode)[0] == self.input[0] || $(sel.focusNode).parent()[0] == self.input[0]) && sel.getRangeAt && sel.rangeCount) {
-            range = sel.getRangeAt(0);
-            range.deleteContents();
-
-            var el = document.createElement("div");
-            el.innerHTML = html;
-            var frag = document.createDocumentFragment(), node, lastNode;
-            while ((node = el.firstChild)) {
-                lastNode = frag.appendChild(node);
-            }
-            range.insertNode(range.createContextualFragment(" "));
-            range.insertNode(frag);
-            range.insertNode(range.createContextualFragment(" "));
-            if (lastNode) {
-                range = range.cloneRange();
-                range.setStartAfter(lastNode);
-                range.collapse(true);
-                sel.removeAllRanges();
-                sel.addRange(range);
-            }
-        } else {
-            self.input.append(" " + html + " ");
-        }
-    } else if (document.selection && document.selection.type != "Control") {
-        document.selection.createRange().pasteHTML(html);
-    }
-    self.modal.hide();
-    self.input.trigger("ek.modal-window-hide");
-    self.input.trigger("ek.smile-inserted");
+    this.input.css({height : "19px"});
 };
 
 (function ($) {

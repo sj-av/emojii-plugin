@@ -8,9 +8,14 @@
 <link href="css/minEmoji.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
 
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">-->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
 <script src="js/emotions.js"></script>
 <script src="js/jMinEmoji.js"></script>
 <script src="js/Emojii_Keyboard.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 <body>
 
 <div style="float: left;"><input type="text" size="50" class="emojii_keyboard"/></div>
@@ -22,9 +27,18 @@
 <div style="float: right;"><input type="text" size="100" class="emojii_keyboard"/></div>
 
 
+<div style="clear:both; width:300px; height: 500px;">
+    <h4>Some Text</h4>
+    <textarea name="some_textarea" id="" cols="30" rows="10" class="emojii_keyboard"></textarea>
+</div>
+
+
+
+
 
 <script>
     $(function () {
+        $(".emojii_keyboard").Emojii_Keyboard();
         $(".emojii_keyboard").Emojii_Keyboard();
     });
 </script>

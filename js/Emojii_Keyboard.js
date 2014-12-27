@@ -5,7 +5,7 @@ function Emojii_Keyboard(el) {
     this.input = el;
     this.btn = null;
     this.$documentBody = $("body").first();
-    this.selection = null;
+    this.parent = this.input.parent();
 
     this.render();
     this.renderSampleModal();
@@ -13,7 +13,9 @@ function Emojii_Keyboard(el) {
 
 Emojii_Keyboard.prototype.renderSampleModal = function () {
 
-    if ($("#tabs-container-sample").length !== 0) { return; }
+    if ($("#tabs-container-sample").length !== 0) {
+        return;
+    }
 
     this.$documentBody.append('<div id="tabs-container-sample"><ul class="tabs"></ul></div>');
     this.input.trigger("ek.sample-container-rendered");
@@ -25,7 +27,14 @@ Emojii_Keyboard.prototype.renderSampleModal = function () {
         html,
         self = this;
 
-    if ($container.attr("rendered")) { return; }
+    $("<button/>").attr({
+        "class": "close",
+        "type": "button"
+    }).html('<span aria-hidden="true">×</span><span class="sr-only"></span>').prependTo($container);
+
+    if ($container.attr("rendered")) {
+        return;
+    }
 
     for (var group in EP_emotions) {
         if (!EP_emotions.hasOwnProperty(group)) continue;
@@ -37,36 +46,43 @@ Emojii_Keyboard.prototype.renderSampleModal = function () {
         EP_emotions[group].forEach(function (item) {
             html += "<span>" + item + "</span>";
         });
-        $tabs.after($("<div/>").html(html).attr({id: "tab-" + _i, class: "tab-content " + current}));
+        $tabs.after($("<div/>").html(html).attr({
+            id: "tab-" + _i,
+            class: "tab-content " + current
+        }));
         _i++;
     }
 
-    $container.attr({rendered: true});
+    $container.attr({
+        rendered: true
+    });
 
     $(".tab-content").minEmoji();
 };
 
-Emojii_Keyboard.prototype.btnClick = function () {
+Emojii_Keyboard.prototype.btnClick = function (event) {
+
+    event.preventDefault();
 
     var self = this,
         hash = new Array(5).join().replace(/(.|$)/g, function () {
             return ((Math.random() * 36) | 0).toString(36);
         }),
-        position = self.input.position(),
-        body_width = self.$documentBody.width(),
-        horizontal_position = {left: (position.left) + "px"};
-
-    if (position.left > body_width / 2) {
-        horizontal_position = {right: (body_width - self.btn.position().left - self.btn.width()) + "px"}
-    }
+        position = this.input.position();
 
     if (!self.rendered) {
         self.modal = $("<div/>")
-            .html($("#tabs-container-sample").clone().attr({id: hash}))
-            .attr({class: "emoji-menu"})
-            .css({top: (position.top + 26) + "px"}).appendTo("body");
+            .html($("#tabs-container-sample").clone().attr({
+                id: hash
+            }))
+            .attr({
+                class: "emoji-menu"
+            })
+            .css({
+                top: (position.top + this.input.height() + 8) + "px",
+                left: "0px"
+            }).appendTo(this.parent);
 
-        self.modal.css(horizontal_position);
 
         $('#' + hash + ' ul.tabs li').click(function () {
             var tab_id = $(this).attr('data-tab');
@@ -90,9 +106,15 @@ Emojii_Keyboard.prototype.btnClick = function () {
             var character = $(this).attr("data-char"),
                 caretPos = self.input[0].selectionStart,
                 prevText = self.input.val();
-            
-            self.input.val(prevText.substring(0, caretPos) + character + prevText.substring(caretPos) );
+
+            self.input.val(prevText.substring(0, caretPos) + character + prevText.substring(caretPos));
         });
+
+        self.parent.find(".close").first().click(function (event) {
+            event.preventDefault();
+            self.modal.hide();
+        });
+
         self.input.trigger("ek.modal-window-rendered");
     } else {
         self.modal.show();
@@ -101,28 +123,26 @@ Emojii_Keyboard.prototype.btnClick = function () {
 };
 
 Emojii_Keyboard.prototype.render = function () {
-    var attributes = {},
-        $inputs = $("input"),
-        self = this;
+    var self = this;
 
-    for (var key in $(this).get(0).attributes) {
-        if (!$(this).get(0).attributes.hasOwnProperty(key)) continue;
-        var item = $(this).get(0).attributes[key];
-
-        if (item.name != null)
-            attributes[item.name] = item.value;
-    }
-
-    attributes.contentEditable = true;
-
+    if(self.input.attr("data-rendered") == "true") return false;
     this.btn = $("<button/>")
         .html('<img src="data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==" style="vertical-align: middle;" class="em emj1">')
-        .css({"vertical-align": "top", "margin": 0})
-        .attr({class: "modal-btn"});
+        .css({
+            "vertical-align": "top",
+            "margin": 0
+        })
+        .attr({
+            class: "modal-btn"
+        });
 
     this.btn.click(self.btnClick.bind(self));
     this.input.after(this.btn);
-    this.input.css({height : "19px"});
+    this.input.css({
+        "min-height": "19px"
+    });
+    this.input.attr({"data-rendered": true});
+    this.parent.css({position: "relative"});
 };
 
 (function ($) {
@@ -133,4 +153,3 @@ Emojii_Keyboard.prototype.render = function () {
         });
     };
 })(jQuery);
-
